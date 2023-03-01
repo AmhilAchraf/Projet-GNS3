@@ -1,0 +1,170 @@
+R8#show running-config
+Building configuration...
+
+Current configuration : 2361 bytes
+!
+upgrade fpd auto
+version 15.3
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname R8
+!
+boot-start-marker
+boot-end-marker
+!
+aqm-register-fnf
+!
+!
+no aaa new-model
+no ip icmp rate-limit unreachable
+!
+!
+!
+ip vrf A
+ rd 100:100
+ route-target export 108:108
+ route-target import 108:108
+!
+!
+!
+!
+no ip domain lookup
+ip cef
+no ipv6 cef
+!
+multilink bundle-name authenticated
+mpls label protocol ldp
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+redundancy
+!
+!
+ip tcp synwait-time 5
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback1
+ ip address 8.8.8.8 255.255.255.0
+!
+interface FastEthernet0/0
+ no ip address
+ shutdown
+ duplex half
+!
+interface GigabitEthernet1/0
+ ip vrf forwarding A
+ ip address 41.41.19.8 255.255.255.0
+ negotiation auto
+!
+interface GigabitEthernet2/0
+ no ip address
+ shutdown
+ negotiation auto
+!
+interface GigabitEthernet3/0
+ ip address 59.59.38.8 255.255.255.0
+ negotiation auto
+ mpls ip
+!
+interface GigabitEthernet4/0
+ no ip address
+ shutdown
+ negotiation auto
+!
+interface GigabitEthernet5/0
+ no ip address
+ shutdown
+ negotiation auto
+!
+interface GigabitEthernet6/0
+ no ip address
+ shutdown
+ negotiation auto
+!
+!
+router eigrp 1
+ network 8.8.8.0 0.0.0.255
+ network 59.59.38.0 0.0.0.255
+!
+router ospf 1 vrf A
+ redistribute bgp 100 subnets
+ network 41.41.19.0 0.0.0.255 area 0
+!
+router bgp 100
+ bgp log-neighbor-changes
+ neighbor 1.1.1.1 remote-as 100
+ neighbor 1.1.1.1 update-source Loopback1
+ neighbor 15.15.15.15 remote-as 100
+ neighbor 15.15.15.15 update-source Loopback1
+ !
+ address-family vpnv4
+  neighbor 1.1.1.1 activate
+  neighbor 1.1.1.1 send-community extended
+  neighbor 15.15.15.15 activate
+  neighbor 15.15.15.15 send-community extended
+ exit-address-family
+ !
+ address-family ipv4 vrf A
+  redistribute ospf 1
+ exit-address-family
+!
+ip forward-protocol nd
+no ip http server
+no ip http secure-server
+!
+!
+!
+no cdp log mismatch duplex
+!
+!
+mpls ldp router-id Loopback1
+!
+control-plane
+!
+!
+mgcp behavior rsip-range tgcp-only
+mgcp behavior comedia-role none
+mgcp behavior comedia-check-media-src disable
+mgcp behavior comedia-sdp-force disable
+!
+mgcp profile default
+!
+!
+!
+gatekeeper
+ shutdown
+!
+!
+line con 0
+ exec-timeout 0 0
+ privilege level 15
+ logging synchronous
+ stopbits 1
+line aux 0
+ exec-timeout 0 0
+ privilege level 15
+ logging synchronous
+ stopbits 1
+line vty 0 4
+ login
+ transport input all
+!
+!
+end
