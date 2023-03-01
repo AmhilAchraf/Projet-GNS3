@@ -1,0 +1,149 @@
+R5#show running-config
+
+*Mar  1 22:35:35.103: %SYS-3-CPUHOG: Task is running for (2044)msecs, more than                                                                                                                 (2000)msecs (1/1),process = Crypto CA.
+-Traceback= 0x64D1454Cz 0x64D14900z 0x64CAEA98z 0x64CB5DC4z 0x64CB67B4z 0x64B2E8                                                                                                                0Cz 0x64AEBFD8z 0x64B28D20z 0x64B31B7Cz 0x64B31C4Cz 0x64B3BCC0z 0x64B4C330z 0x64                                                                                                                AF0964z 0x64B1D0CCz 0x63DE0758z 0x63DE073Cz
+Building configuration...
+
+Current configuration : 1843 bytes
+!
+upgrade fpd auto
+version 15.3
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname R5
+!
+boot-start-marker
+boot-end-marker
+!
+aqm-register-fnf
+!
+!
+no aaa new-model
+no ip icmp rate-limit unreachable
+!
+!
+!
+!
+!
+!
+no ip domain lookup
+ip cef
+no ipv6 cef
+!
+multilink bundle-name authenticated
+mpls label protocol ldp
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+redundancy
+!
+!
+ip tcp synwait-time 5
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback1
+ ip address 5.5.5.5 255.255.255.0
+!
+interface FastEthernet0/0
+ no ip address
+ shutdown
+ duplex half
+!
+interface GigabitEthernet1/0
+ ip address 59.59.56.5 255.255.255.0
+ negotiation auto
+ mpls ip
+!
+interface GigabitEthernet2/0
+ ip address 59.59.45.5 255.255.255.0
+ negotiation auto
+ mpls ip
+!
+interface GigabitEthernet3/0
+ ip address 59.59.35.5 255.255.255.0
+ negotiation auto
+ mpls ip
+!
+interface GigabitEthernet4/0
+ ip address 59.59.15.5 255.255.255.0
+ negotiation auto
+ mpls ip
+!
+interface GigabitEthernet5/0
+ no ip address
+ shutdown
+ negotiation auto
+!
+interface GigabitEthernet6/0
+ no ip address
+ shutdown
+ negotiation auto
+!
+!
+router eigrp 1
+ network 5.5.5.0 0.0.0.255
+ network 59.59.15.0 0.0.0.255
+ network 59.59.35.0 0.0.0.255
+ network 59.59.45.0 0.0.0.255
+ network 59.59.56.0 0.0.0.255
+!
+ip forward-protocol nd
+no ip http server
+no ip http secure-server
+!
+!
+!
+no cdp log mismatch duplex
+!
+!
+mpls ldp router-id Loopback1
+!
+control-plane
+!
+!
+mgcp behavior rsip-range tgcp-only
+mgcp behavior comedia-role none
+mgcp behavior comedia-check-media-src disable
+mgcp behavior comedia-sdp-force disable
+!
+mgcp profile default
+!
+!
+!
+gatekeeper
+ shutdown
+!
+!
+line con 0
+ exec-timeout 0 0
+ privilege level 15
+ logging synchronous
+ stopbits 1
+line aux 0
+ exec-timeout 0 0
+ privilege level 15
+ logging synchronous
+ stopbits 1
+line vty 0 4
+ login
+ transport input all
+!
+!
+end
