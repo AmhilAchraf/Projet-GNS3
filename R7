@@ -1,0 +1,146 @@
+R7#show running-config
+Building configuration...
+
+*Mar  1 22:33:50.279: %SYS-3-CPUHOG: Task is running for (2060)msecs, more than                                                                                                                 (2000)msecs (0/0),process = Crypto CA.
+-Traceback= 0x63DF46E8z 0x63DF7D5Cz 0x64CC4250z 0x64CC3AC8z 0x64CB66FCz 0x64B2E8                                                                                                                0Cz 0x64AEBFD8z 0x64B28D20z 0x64B31B7Cz 0x64B31C4Cz 0x64B3BCC0z 0x64B4C330z 0x64                                                                                                                AF0964z 0x64B1D0CCz 0x63DE0758z 0x63DE073Cz
+Current configuration : 1775 bytes
+!
+upgrade fpd auto
+version 15.3
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname R7
+!
+boot-start-marker
+boot-end-marker
+!
+!
+!
+no aaa new-model
+no ip icmp rate-limit unreachable
+!
+!
+!
+!
+!
+!
+no ip domain lookup
+ip cef
+no ipv6 cef
+!
+multilink bundle-name authenticated
+mpls label protocol ldp
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+redundancy
+!
+!
+ip tcp synwait-time 5
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback1
+ ip address 7.7.7.7 255.255.255.0
+!
+interface FastEthernet0/0
+ no ip address
+ shutdown
+ duplex half
+!
+interface GigabitEthernet1/0
+ ip address 59.59.67.7 255.255.255.0
+ negotiation auto
+ mpls ip
+!
+interface GigabitEthernet2/0
+ ip address 59.59.37.7 255.255.255.0
+ negotiation auto
+ mpls ip
+!
+interface GigabitEthernet3/0
+ ip address 59.59.27.7 255.255.255.0
+ negotiation auto
+ mpls ip
+!
+interface GigabitEthernet4/0
+ no ip address
+ shutdown
+ negotiation auto
+!
+interface GigabitEthernet5/0
+ no ip address
+ shutdown
+ negotiation auto
+!
+interface GigabitEthernet6/0
+ no ip address
+ shutdown
+ negotiation auto
+!
+!
+router eigrp 1
+ network 7.7.7.0 0.0.0.255
+ network 59.59.27.0 0.0.0.255
+ network 59.59.37.0 0.0.0.255
+ network 59.59.67.0 0.0.0.255
+!
+ip forward-protocol nd
+no ip http server
+no ip http secure-server
+!
+!
+!
+no cdp log mismatch duplex
+!
+!
+mpls ldp router-id Loopback1
+!
+control-plane
+!
+!
+mgcp behavior rsip-range tgcp-only
+mgcp behavior comedia-role none
+mgcp behavior comedia-check-media-src disable
+mgcp behavior comedia-sdp-force disable
+!
+mgcp profile default
+!
+!
+!
+gatekeeper
+ shutdown
+!
+!
+line con 0
+ exec-timeout 0 0
+ privilege level 15
+ logging synchronous
+ stopbits 1
+line aux 0
+ exec-timeout 0 0
+ privilege level 15
+ logging synchronous
+ stopbits 1
+line vty 0 4
+ login
+ transport input all
+!
+!
+end
